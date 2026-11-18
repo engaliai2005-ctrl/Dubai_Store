@@ -61,31 +61,20 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
     const planeH = 6.0;
     const planeW = planeH * (16.0 / 9.0); // 10.667
 
-    // Smart Camera Framing:
-    // On Desktop: distance shows the entire wide storefront (Z ~ 7.2)
-    // On Mobile portrait: distance frames the entrance doors & glowing sign prominently (Z ~ 5.3)
+    // Fit the full storefront in both axes. Portrait screens need more distance
+    // so the wide facade is not cropped at the sides.
     const FOV = 45;
     const halfTan = Math.tan(((FOV / 2) * Math.PI) / 180);
 
     const getCamZ = (w: number, h: number) => {
-      const aspect = w / h;
-      if (aspect >= 1.5) {
-        // Desktop widescreen: show entire width with slight margin
-        return (planeH * 1.04) / 2 / halfTan;
-      } else if (aspect >= 1.0) {
-        // Tablet / square
-        return (planeH * 1.08) / 2 / halfTan;
-      } else {
-        // Mobile portrait: focus directly on the entrance, sign, and doors
-        // Doorway + sign width is ~5.0m, so it fills mobile screen beautifully
-        const mobileTargetW = 5.2;
-        const neededH = mobileTargetW / aspect;
-        return Math.min(neededH / 2 / halfTan, 5.6);
-      }
+      const aspect = Math.max(w / h, 0.01);
+      const fitHeight = (planeH * 1.08) / (2 * halfTan);
+      const fitWidth = (planeW * 1.08) / (2 * halfTan * aspect);
+      return Math.max(fitHeight, fitWidth);
     };
 
     let initialCamZ = getCamZ(width, height);
-    const initialCamY = isMobile ? -0.2 : 0.0;
+    let initialCamY = isMobile ? -0.2 : 0.0;
 
     const camera = new THREE.PerspectiveCamera(FOV, width / height, 0.1, 100);
     camera.position.set(0, initialCamY, initialCamZ);
@@ -330,7 +319,7 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
 
     animationFrameId = requestAnimationFrame(animate);
 
-    // Responsive resize handler ensuring optimal view on all screen orientations
+    // Reframe the entire facade when the screen is resized or rotated.
     const handleResize = () => {
       if (!container) return;
       const newW = container.clientWidth || window.innerWidth;
@@ -338,19 +327,22 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
       const mobileNow = newW < 768 || newW < newH;
       camera.aspect = newW / newH;
       initialCamZ = getCamZ(newW, newH);
-      const newCamY = mobileNow ? -0.2 : 0.0;
+      initialCamY = mobileNow ? -0.2 : 0.0;
       if (!isEnteringRef.current) {
         camera.position.z = initialCamZ;
-        camera.position.y = newCamY;
+        camera.position.y = initialCamY;
       }
       camera.updateProjectionMatrix();
       renderer.setSize(newW, newH);
     };
 
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(container);
     window.addEventListener("resize", handleResize);
 
     return () => {
       clearTimeout(safetyTimer);
+      resizeObserver.disconnect();
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationFrameId);
       if (container.contains(renderer.domElement)) {
@@ -369,7 +361,7 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950 font-sans select-none" dir="rtl">
+    <div className="fixed inset-0 z-50 h-[100dvh] overflow-hidden bg-slate-950 font-sans select-none" dir="rtl">
       {/* 3D Canvas Mount - clicking anywhere triggers entrance */}
       <div
         ref={mountRef}
