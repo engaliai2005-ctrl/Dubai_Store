@@ -55,14 +55,15 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
 
     // Scene & Camera setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a1015);
+    scene.background = null;
+    let imageFrame: THREE.LineSegments | null = null;
 
     // Storefront plane geometry: 16:9 ratio
     const planeH = 6.0;
     const planeW = planeH * (16.0 / 9.0); // 10.667
 
-    // Fill portrait screens with the storefront, while keeping the complete
-    // facade visible on landscape and desktop screens.
+    // Preserve the full image on portrait screens. A blurred, full-screen copy
+    // behind it fills the tall phone viewport without cropping the facade.
     const FOV = 45;
     const halfTan = Math.tan(((FOV / 2) * Math.PI) / 180);
 
@@ -70,7 +71,7 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
       const aspect = Math.max(w / h, 0.01);
       const fitHeight = planeH / (2 * halfTan);
       const fitWidth = planeW / (2 * halfTan * aspect);
-      if (aspect < 1) return Math.min(fitHeight, fitWidth) * 0.96;
+      if (aspect < 1) return fitWidth * 1.08;
 
       const fitHeightWithMargin = fitHeight * 1.08;
       const fitWidthWithMargin = fitWidth * 1.08;
@@ -94,6 +95,7 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
       });
       renderer.setSize(width, height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.0));
+      renderer.setClearColor(0x0a1015, 0);
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.12;
       container.appendChild(renderer.domElement);
@@ -137,6 +139,17 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
         const backdropMesh = new THREE.Mesh(planeGeo, planeMat);
         backdropMesh.position.set(0, 0, -0.05);
         scene.add(backdropMesh);
+
+        const frameGeometry = new THREE.EdgesGeometry(planeGeo);
+        const frameMaterial = new THREE.LineBasicMaterial({
+          color: 0x8df7fb,
+          transparent: true,
+          opacity: 0.8,
+        });
+        imageFrame = new THREE.LineSegments(frameGeometry, frameMaterial);
+        imageFrame.position.set(0, 0, -0.025);
+        imageFrame.visible = width < height;
+        scene.add(imageFrame);
         setIsLoading(false);
       },
       undefined,
@@ -332,6 +345,7 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
       camera.aspect = newW / newH;
       initialCamZ = getCamZ(newW, newH);
       initialCamY = mobileNow ? -0.2 : 0.0;
+      if (imageFrame) imageFrame.visible = newW < newH;
       if (!isEnteringRef.current) {
         camera.position.z = initialCamZ;
         camera.position.y = initialCamY;
@@ -353,6 +367,10 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
         container.removeChild(renderer.domElement);
       }
       renderer.dispose();
+      if (imageFrame) {
+        imageFrame.geometry.dispose();
+        (imageFrame.material as THREE.Material).dispose();
+      }
       glassTex.dispose();
       glassMat.dispose();
       frameMat.dispose();
@@ -365,11 +383,20 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 h-[100dvh] overflow-hidden bg-slate-950 font-sans select-none" dir="rtl">
+    <div
+      className="fixed inset-0 z-50 h-[100dvh] overflow-hidden bg-slate-950 font-sans select-none"
+      style={{ backgroundImage: `url("${withBasePath("/storefront-enhanced-2k.jpg")}")`, backgroundPosition: "center", backgroundSize: "cover" }}
+      dir="rtl"
+    >
+      <div
+        className="pointer-events-none absolute inset-[-24px] scale-110 bg-cover bg-center opacity-80 blur-2xl"
+        style={{ backgroundImage: `url("${withBasePath("/storefront-enhanced-2k.jpg")}")` }}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-slate-950/35" />
       {/* 3D Canvas Mount - clicking anywhere triggers entrance */}
       <div
         ref={mountRef}
-        className="absolute inset-0 w-full h-full cursor-pointer"
+        className="absolute inset-0 z-[1] h-full w-full cursor-pointer"
         onClick={handleStartEntering}
       />
 

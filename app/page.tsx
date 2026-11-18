@@ -27,10 +27,16 @@ function StorefrontEntranceLoading() {
       aria-live="polite"
     >
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-[-24px] scale-110 bg-cover bg-center opacity-75 blur-2xl"
         style={{
-          backgroundImage: `linear-gradient(to top, rgb(2 6 23 / 88%), rgb(2 6 23 / 12%) 55%, rgb(2 6 23 / 45%)), url("${withBasePath("/storefront-enhanced-2k.jpg")}")`,
+          backgroundImage: `url("${withBasePath("/storefront-enhanced-2k.jpg")}")`,
         }}
+      />
+      <div className="absolute inset-0 bg-slate-950/40" />
+      <img
+        src={withBasePath("/storefront-enhanced-2k.jpg")}
+        alt="واجهة دبي ستور والمدخل بالكامل"
+        className="absolute left-1/2 top-1/2 z-[1] max-h-[48dvh] w-[94vw] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-cyan-100/70 object-contain shadow-2xl sm:max-h-[66dvh] sm:w-[min(90vw,1200px)]"
       />
       <div className="absolute inset-x-0 top-0 flex items-center justify-between px-4 py-5 sm:px-6">
         <div className="flex items-center gap-3">
