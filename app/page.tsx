@@ -17,10 +17,50 @@ import {
 import dynamic from "next/dynamic";
 import React, { useMemo, useState } from "react";
 import { PhoneFinderModal } from "../components/ai-finder/PhoneFinderModal";
+import { withBasePath } from "../lib/site";
+
+function StorefrontEntranceLoading() {
+  return (
+    <div
+      className="fixed inset-0 z-50 h-[100dvh] overflow-hidden bg-slate-950 text-white"
+      role="status"
+      aria-live="polite"
+    >
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(to top, rgb(2 6 23 / 88%), rgb(2 6 23 / 12%) 55%, rgb(2 6 23 / 45%)), url("${withBasePath("/storefront-enhanced-2k.jpg")}")`,
+        }}
+      />
+      <div className="absolute inset-x-0 top-0 flex items-center justify-between px-4 py-5 sm:px-6">
+        <div className="flex items-center gap-3">
+          <img
+            src={withBasePath("/logo.jpg")}
+            alt="Dubai Store"
+            className="h-11 w-11 rounded-xl border border-cyan-300/40 bg-slate-900/70 object-contain p-1"
+          />
+          <div>
+            <p className="font-black">دبي ستور</p>
+            <p className="text-xs text-slate-200">موبايلات وإكسسوارات أصلية</p>
+          </div>
+        </div>
+        <span className="rounded-full border border-white/25 bg-slate-950/50 px-3 py-2 text-xs font-bold backdrop-blur">
+          جاري تجهيز المدخل...
+        </span>
+      </div>
+      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-4 px-5 pb-10 text-center sm:pb-14">
+        <div className="h-9 w-9 animate-spin rounded-full border-4 border-white/25 border-t-cyan-400" />
+        <h1 className="text-2xl font-black drop-shadow sm:text-4xl">
+          أهلاً بيك في <span className="text-cyan-300">دبي ستور</span>
+        </h1>
+      </div>
+    </div>
+  );
+}
 
 const StorefrontEntrance3D = dynamic(
   () => import("../components/storefront/StorefrontEntrance3D"),
-  { ssr: false }
+  { ssr: false, loading: StorefrontEntranceLoading }
 );
 import { ProductCard } from "../components/catalog/ProductCard";
 import { ProductFilters } from "../components/catalog/ProductFilters";

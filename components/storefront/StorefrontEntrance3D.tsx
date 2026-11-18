@@ -61,16 +61,20 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
     const planeH = 6.0;
     const planeW = planeH * (16.0 / 9.0); // 10.667
 
-    // Fit the full storefront in both axes. Portrait screens need more distance
-    // so the wide facade is not cropped at the sides.
+    // Fill portrait screens with the storefront, while keeping the complete
+    // facade visible on landscape and desktop screens.
     const FOV = 45;
     const halfTan = Math.tan(((FOV / 2) * Math.PI) / 180);
 
     const getCamZ = (w: number, h: number) => {
       const aspect = Math.max(w / h, 0.01);
-      const fitHeight = (planeH * 1.08) / (2 * halfTan);
-      const fitWidth = (planeW * 1.08) / (2 * halfTan * aspect);
-      return Math.max(fitHeight, fitWidth);
+      const fitHeight = planeH / (2 * halfTan);
+      const fitWidth = planeW / (2 * halfTan * aspect);
+      if (aspect < 1) return Math.min(fitHeight, fitWidth) * 0.96;
+
+      const fitHeightWithMargin = fitHeight * 1.08;
+      const fitWidthWithMargin = fitWidth * 1.08;
+      return Math.max(fitHeightWithMargin, fitWidthWithMargin);
     };
 
     let initialCamZ = getCamZ(width, height);
