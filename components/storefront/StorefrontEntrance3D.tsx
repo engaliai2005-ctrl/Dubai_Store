@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import Image from "next/image";
 import { Sparkles, ArrowLeft, ShieldCheck, Truck, Zap } from "lucide-react";
+import { withBasePath } from "../../lib/site";
 
 interface StorefrontEntrance3DProps {
   onEnter: () => void;
@@ -125,7 +126,7 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
     // 1. Crystal-Clear Backdrop Plane
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(
-      "/storefront-enhanced-2k.jpg",
+      withBasePath("/storefront-enhanced-2k.jpg"),
       (texture) => {
         texture.colorSpace = THREE.SRGBColorSpace;
         texture.generateMipmaps = true;
@@ -384,7 +385,7 @@ export default function StorefrontEntrance3D({ onEnter }: StorefrontEntrance3DPr
         <div className="flex items-center gap-2.5 sm:gap-3 pointer-events-auto">
           <div className="relative w-11 h-11 sm:w-14 sm:h-14 rounded-2xl overflow-hidden border border-cyan-400/30 shadow-[0_0_20px_rgba(0,194,203,0.35)] bg-slate-900/80 backdrop-blur-md p-1">
             <Image
-              src="/logo.jpg"
+              src={withBasePath("/logo.jpg")}
               alt="Dubai Store Logo"
               fill
               className="object-contain"

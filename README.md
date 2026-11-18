@@ -114,6 +114,27 @@ Inspired by the authentic Dubai Store storefront aesthetic: luminous neon turquo
 
 ## 🚀 Getting Started
 
+## 🌐 Deploy to GitHub Pages
+
+This repository is configured to publish as a static GitHub Pages project site at:
+`https://engaliai2005-ctrl.github.io/Dubai_Store/`
+
+1. Push the project to the `main` branch.
+2. In GitHub, open **Settings → Pages**.
+3. Under **Build and deployment → Source**, select **GitHub Actions**.
+4. Open the **Actions** tab and wait for **Deploy Dubai Store to GitHub Pages** to finish.
+
+Every push to `main` publishes a new version. The workflow builds the Next.js static export into `out/` and deploys it. Product categories are generated as static pages. The store catalog, cart, wishlist, and admin changes use browser local storage; they are local to each visitor's browser and are not shared between visitors. GitHub Pages cannot run a Next.js server or provide a database backend. The admin passcode is client-side demo protection and is not secure for managing private or production inventory; Supabase helpers are present but are not connected to the store state.
+
+To build the exact Pages version locally in PowerShell:
+
+```powershell
+$env:NEXT_PUBLIC_BASE_PATH = "/Dubai_Store"
+npm run build
+```
+
+The deployable static site will be written to `out/`.
+
 ### 1. Installation
 All dependencies are already installed in `C:\Users\alizb\.gemini\antigravity\scratch\dubai-store`.
 

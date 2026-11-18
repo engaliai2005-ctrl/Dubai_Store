@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import { withBasePath } from "../../lib/site";
 
 interface LogoProps {
   className?: string;
@@ -23,7 +24,7 @@ export const DubaiStoreLogo: React.FC<LogoProps> = ({
     <div className={`inline-flex items-center select-none ${className}`}>
       {/* Exact official Dubai Store logo image provided by owner */}
       <img
-        src="/logo.jpg"
+        src={withBasePath("/logo.jpg")}
         alt="Dubai Store"
         className={`${sizeClasses} w-auto object-contain mix-blend-multiply`}
         loading="eager"

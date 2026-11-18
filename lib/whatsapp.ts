@@ -1,4 +1,5 @@
 import { CartItem, Product, ProductColor } from "./types";
+import { SITE_BASE_PATH } from "./site";
 
 export const DUBAI_STORE_WHATSAPP_NUMBER = "201008135160"; // +201008135160
 export const DUBAI_STORE_PHONE_DISPLAY = "01008135160";
@@ -17,8 +18,8 @@ export function getProductWhatsAppUrl(
   const url =
     currentUrl ||
     (typeof window !== "undefined"
-      ? `${window.location.origin}/?product=${product.id}`
-      : `https://dubaistore.eg/?product=${product.id}`);
+      ? `${window.location.origin}${SITE_BASE_PATH}/?product=${product.id}`
+      : `https://engaliai2005-ctrl.github.io${SITE_BASE_PATH}/?product=${product.id}`);
 
   let variantDetails = "";
   if (selectedColor || selectedStorage) {
@@ -51,7 +52,9 @@ export function getCartWhatsAppUrl(
   if (items.length === 0) return `https://wa.me/${DUBAI_STORE_WHATSAPP_NUMBER}`;
 
   const storeUrl =
-    typeof window !== "undefined" ? window.location.origin : "https://dubaistore.eg";
+    typeof window !== "undefined"
+      ? `${window.location.origin}${SITE_BASE_PATH}`
+      : `https://engaliai2005-ctrl.github.io${SITE_BASE_PATH}`;
 
   const itemListText = items
     .map((item, index) => {

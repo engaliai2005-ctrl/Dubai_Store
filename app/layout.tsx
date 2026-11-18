@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://engaliai2005-ctrl.github.io/Dubai_Store/"),
   title: "Dubai Store – متجر دبي ستور | أفضل موبايلات وإكسسوارات أصلية في مصر",
   description:
     "موقع دبي ستور الرسمي. تصفح أحدث هواتف آبل آيفون وسامسونج، ساعات ذكية، سماعات إيربودز، شواحن أصلية وجرابات مع خدمة الطلب المباشر عبر واتساب والتوصيل لجميع محافظات مصر.",
