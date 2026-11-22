@@ -267,14 +267,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <MessageCircle className="w-4 h-4 text-emerald-600" />
                 <span>واتساب</span>
               </a>
-
-              {/* Admin Dashboard shortcut */}
-              <Link
-                href="/admin"
-                className="hidden xl:inline-flex px-2 py-1 text-xs text-slate-400 hover:text-slate-700"
-              >
-                لوحة الإدارة
-              </Link>
             </div>
           </div>
         </div>
@@ -385,14 +377,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <MessageCircle className="w-4 h-4" />
                 <span>كلمنا واتساب: {DUBAI_STORE_PHONE_DISPLAY}</span>
               </a>
-
-              <Link
-                href="/admin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-center text-xs text-slate-400 hover:text-slate-600 py-1"
-              >
-                لوحة تحكم صاحب المحل ←
-              </Link>
             </div>
           </div>
         </div>

@@ -129,10 +129,10 @@ export default function AdminPage() {
               <input
                 type="password"
                 required
-                placeholder="أدخل كلمة المرور (مثال: dubai2026)"
+                placeholder="أدخل كلمة المرور السرية"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-950/80 border border-slate-700 rounded-xl text-white text-sm focus:outline-hidden focus:border-[#00C2CB] transition-all text-left"
+                className="w-full px-4 py-3 bg-slate-950/80 border border-slate-700 rounded-xl text-white text-sm focus:outline-hidden focus:border-[#00C2CB] transition-all text-left placeholder:text-slate-600"
                 dir="ltr"
                 autoFocus
               />

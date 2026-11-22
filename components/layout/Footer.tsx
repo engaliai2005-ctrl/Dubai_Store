@@ -189,11 +189,6 @@ export const Footer: React.FC<FooterProps> = ({
                   طلب أسعار الجملة أو الاستفسارات
                 </a>
               </li>
-              <li>
-                <Link href="/admin" className="hover:text-slate-200 transition-colors">
-                  لوحة تحكم صاحب المحل (/admin)
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -222,11 +217,7 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom */}
         <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-medium">
           <p>© {new Date().getFullYear()} دبي ستور (Dubai Store). جميع الحقوق محفوظة.</p>
-          <div className="flex items-center gap-4">
-            <Link href="/admin" className="hover:text-slate-300">
-              لوحة الإدارة
-            </Link>
-          </div>
+          <p className="text-slate-500">أجهزة وموبايلات أصلية بالضمان المعتمد في مصر</p>
         </div>
       </div>
     </footer>
