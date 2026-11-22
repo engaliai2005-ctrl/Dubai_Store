@@ -106,10 +106,13 @@ export const Hero: React.FC<HeroProps> = ({
 
               {/* Image */}
               <div className="relative my-4 aspect-[4/3] rounded-2xl bg-gradient-to-b from-[#F0FDFA] to-slate-50 flex items-center justify-center p-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=700&q=80"
                   alt="iPhone 16 Pro Max"
                   className="w-full h-full object-contain filter drop-shadow-md"
+                  loading="eager"
+                  decoding="async"
                 />
               </div>
 

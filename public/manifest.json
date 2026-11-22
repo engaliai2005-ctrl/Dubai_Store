@@ -1,0 +1,28 @@
+{
+  "name": "دبي ستور",
+  "short_name": "دبي ستور",
+  "description": "متجر دبي ستور – أفضل موبايلات وإكسسوارات أصلية في مصر",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0F14",
+  "theme_color": "#00C2CB",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "electronics"],
+  "screenshots": []
+}

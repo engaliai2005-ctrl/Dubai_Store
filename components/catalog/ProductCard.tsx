@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Heart, MessageCircle, ShoppingBag, Star } from "lucide-react";
+import { Check, Heart, MessageCircle, Star } from "lucide-react";
 import React, { useState } from "react";
 import { Product } from "../../lib/types";
 import { getProductWhatsAppUrl } from "../../lib/whatsapp";
@@ -13,6 +13,9 @@ interface ProductCardProps {
   onToggleWishlist: (productId: string) => void;
 }
 
+const FALLBACK_IMG =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23F1F5F9'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='40' fill='%2394A3B8'%3E📱%3C/text%3E%3C/svg%3E";
+
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   onOpenDetails,
@@ -21,6 +24,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onToggleWishlist,
 }) => {
   const [added, setAdded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const handleAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -40,16 +44,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     onToggleWishlist(product.id);
   };
 
+  const imgSrc = imgError
+    ? FALLBACK_IMG
+    : product.images?.[0] || FALLBACK_IMG;
+
+  const isAvailable = product.isAvailable && product.stock > 0;
+
   return (
     <div
       onClick={() => onOpenDetails(product)}
-      className="group relative rounded-2xl sm:rounded-3xl bg-white border border-slate-200 hover:border-[#00C2CB] hover:shadow-lg transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === "Enter" && onOpenDetails(product)}
+      aria-label={`${product.name} - ${product.price.toLocaleString()} ج.م`}
+      className="group relative rounded-2xl sm:rounded-3xl bg-white border border-slate-200 hover:border-[#00C2CB] hover:shadow-lg transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00C2CB] focus-visible:outline-none"
     >
       {/* Top Badges & Wishlist */}
       <div className="absolute top-2.5 inset-x-2.5 z-10 flex items-center justify-between pointer-events-none">
         <div className="flex items-center gap-1.5 flex-wrap">
           {product.discountPercentage && product.discountPercentage > 0 ? (
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-600 text-white shadow-2xs">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-600 text-white shadow-xs">
               خصم {product.discountPercentage}%
             </span>
           ) : null}
@@ -64,8 +78,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Wishlist Button */}
         <button
           onClick={handleWishlist}
-          className="pointer-events-auto p-1.5 sm:p-2 rounded-full bg-white/90 shadow-2xs hover:bg-white text-slate-400 hover:text-rose-500 transition-colors"
-          aria-label="إضافة للمفضلة"
+          className="pointer-events-auto p-1.5 sm:p-2 rounded-full bg-white/90 shadow-xs hover:bg-white text-slate-400 hover:text-rose-500 transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center"
+          aria-label={isWishlisted ? "إزالة من المفضلة" : "إضافة للمفضلة"}
         >
           <Heart
             className={`w-4 h-4 transition-colors ${
@@ -77,21 +91,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* Product Image */}
       <div className="relative aspect-square w-full bg-slate-50 p-4 sm:p-6 flex items-center justify-center overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={product.images[0] || "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=600&q=80"}
+          src={imgSrc}
           alt={product.name}
           className="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-300 ease-out"
           loading="lazy"
+          decoding="async"
+          onError={() => setImgError(true)}
         />
 
-        {/* Stock Status Badge */}
-        {!product.isAvailable || product.stock <= 0 ? (
-          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-2xs flex items-center justify-center">
+        {/* Out-of-stock overlay */}
+        {!isAvailable && (
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center">
             <span className="px-3 py-1 rounded-full bg-rose-600 text-white font-black text-xs">
               خلص من المخزن
             </span>
           </div>
-        ) : null}
+        )}
       </div>
 
       {/* Product Info */}
@@ -99,17 +116,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div>
           {/* Brand & Stock Status */}
           <div className="flex items-center justify-between text-[11px] mb-1">
-            <span className="font-extrabold text-[#00C2CB]">
-              {product.brand}
-            </span>
-            <span
-              className={`font-bold ${
-                product.isAvailable && product.stock > 0
-                  ? "text-emerald-600"
-                  : "text-rose-600"
-              }`}
-            >
-              {product.isAvailable && product.stock > 0 ? "متوفر حالياً" : "غير متوفر"}
+            <span className="font-extrabold text-[#00C2CB]">{product.brand}</span>
+            <span className={`font-bold ${isAvailable ? "text-emerald-600" : "text-rose-600"}`}>
+              {isAvailable ? "متوفر" : "نفد"}
             </span>
           </div>
 
@@ -118,7 +127,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product.name}
           </h3>
 
-          {/* Short Specs / Storage preview */}
+          {/* Storage Options */}
           {product.storageOptions && product.storageOptions.length > 0 && (
             <div className="mt-2 flex items-center gap-1 flex-wrap">
               {product.storageOptions.slice(0, 3).map((opt) => (
@@ -129,6 +138,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   {opt}
                 </span>
               ))}
+            </div>
+          )}
+
+          {/* Rating */}
+          {product.rating > 0 && (
+            <div className="flex items-center gap-1 mt-1.5">
+              <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+              <span className="text-[10px] font-bold text-slate-500">
+                {product.rating.toFixed(1)} ({product.reviewCount})
+              </span>
             </div>
           )}
         </div>
@@ -149,21 +168,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </div>
           </div>
 
-          {/* Buttons: شوف التفاصيل + واتساب */}
+          {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={() => onOpenDetails(product)}
-              className="py-2 px-2.5 rounded-xl bg-slate-900 hover:bg-[#00C2CB] text-white text-[11px] sm:text-xs font-black transition-colors text-center"
+              className="py-2.5 px-2.5 rounded-xl bg-slate-900 hover:bg-[#00C2CB] text-white text-[11px] sm:text-xs font-black transition-colors text-center min-h-[40px]"
             >
-              شوف التفاصيل
+              التفاصيل
             </button>
 
             <button
               onClick={handleWhatsApp}
-              className="py-2 px-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[11px] sm:text-xs font-black transition-colors flex items-center justify-center gap-1"
-              title="اطلب عبر واتساب"
+              className="py-2.5 px-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[11px] sm:text-xs font-black transition-colors flex items-center justify-center gap-1 min-h-[40px]"
+              aria-label={`اطلب ${product.name} عبر واتساب`}
             >
-              <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
+              <MessageCircle className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
               <span>واتساب</span>
             </button>
           </div>
@@ -172,3 +191,4 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     </div>
   );
 };
+

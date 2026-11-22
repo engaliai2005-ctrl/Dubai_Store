@@ -9,6 +9,8 @@ const CATEGORIES_STORAGE_KEY = "dubai_store_categories_v2";
 const CART_STORAGE_KEY = "dubai_store_cart_v2";
 const WISHLIST_STORAGE_KEY = "dubai_store_wishlist_v2";
 const ADMIN_AUTH_KEY = "dubai_store_admin_auth_v2";
+const ADMIN_ATTEMPTS_KEY = "dubai_store_admin_attempts_v2";
+const ADMIN_LOCKOUT_KEY = "dubai_store_admin_lockout_v2";
 
 type Listener = () => void;
 const listeners = new Set<Listener>();
@@ -90,15 +92,59 @@ export const Store = {
   },
 
   adminLogin(password: string): boolean {
-    if (password === "dubai2026" || password === "admin123") {
+    if (typeof window === "undefined") return false;
+
+    // Rate limiting: max 5 attempts per 15-minute window
+    const now = Date.now();
+    const lockoutUntil = Number(sessionStorage.getItem(ADMIN_LOCKOUT_KEY) || "0");
+    if (now < lockoutUntil) {
+      return false; // Still locked out
+    }
+
+    const attemptsRaw = sessionStorage.getItem(ADMIN_ATTEMPTS_KEY);
+    let attempts: { count: number; firstAt: number } = attemptsRaw
+      ? JSON.parse(attemptsRaw)
+      : { count: 0, firstAt: now };
+
+    // Reset window after 15 minutes
+    if (now - attempts.firstAt > 15 * 60 * 1000) {
+      attempts = { count: 0, firstAt: now };
+    }
+
+    // Check password (single hardened password)
+    if (password === "dubai2026") {
       isAdminState = true;
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem(ADMIN_AUTH_KEY, "true");
-      }
+      sessionStorage.setItem(ADMIN_AUTH_KEY, "true");
+      sessionStorage.removeItem(ADMIN_ATTEMPTS_KEY);
+      sessionStorage.removeItem(ADMIN_LOCKOUT_KEY);
       notify();
       return true;
     }
+
+    // Wrong password — record attempt
+    attempts.count += 1;
+    if (attempts.count >= 5) {
+      // Lock out for 15 minutes
+      sessionStorage.setItem(ADMIN_LOCKOUT_KEY, String(now + 15 * 60 * 1000));
+      sessionStorage.removeItem(ADMIN_ATTEMPTS_KEY);
+    } else {
+      sessionStorage.setItem(ADMIN_ATTEMPTS_KEY, JSON.stringify(attempts));
+    }
     return false;
+  },
+
+  adminGetLockoutInfo(): { isLockedOut: boolean; remainingMs: number; attemptsLeft: number } {
+    if (typeof window === "undefined") return { isLockedOut: false, remainingMs: 0, attemptsLeft: 5 };
+    const now = Date.now();
+    const lockoutUntil = Number(sessionStorage.getItem(ADMIN_LOCKOUT_KEY) || "0");
+    if (now < lockoutUntil) {
+      return { isLockedOut: true, remainingMs: lockoutUntil - now, attemptsLeft: 0 };
+    }
+    const attemptsRaw = sessionStorage.getItem(ADMIN_ATTEMPTS_KEY);
+    const attempts: { count: number; firstAt: number } = attemptsRaw
+      ? JSON.parse(attemptsRaw)
+      : { count: 0, firstAt: now };
+    return { isLockedOut: false, remainingMs: 0, attemptsLeft: Math.max(0, 5 - attempts.count) };
   },
 
   adminLogout() {
@@ -323,9 +369,10 @@ export function useDubaiStore() {
     isAdminLoggedIn,
     cartTotalAmount,
     cartItemCount,
-    adminLogin: Store.adminLogin,
-    adminLogout: Store.adminLogout,
-    addProduct: Store.addProduct,
+    adminLogin: Store.adminLogin.bind(Store),
+    adminLogout: Store.adminLogout.bind(Store),
+    adminGetLockoutInfo: Store.adminGetLockoutInfo.bind(Store),
+    addProduct: Store.addProduct.bind(Store),
     updateProduct: Store.updateProduct,
     deleteProduct: Store.deleteProduct,
     toggleProductStock: Store.toggleProductStock,

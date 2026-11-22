@@ -3,7 +3,10 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://engaliai2005-ctrl.github.io/Dubai_Store/"),
-  title: "Dubai Store – متجر دبي ستور | أفضل موبايلات وإكسسوارات أصلية في مصر",
+  title: {
+    default: "دبي ستور | موبايلات وإكسسوارات أصلية في مصر",
+    template: "%s | دبي ستور",
+  },
   description:
     "موقع دبي ستور الرسمي. تصفح أحدث هواتف آبل آيفون وسامسونج، ساعات ذكية، سماعات إيربودز، شواحن أصلية وجرابات مع خدمة الطلب المباشر عبر واتساب والتوصيل لجميع محافظات مصر.",
   keywords: [
@@ -14,14 +17,34 @@ export const metadata: Metadata = {
     "سامسونج S25 الترا",
     "إكسسوارات موبايل",
     "شواحن أصلية",
-    "سماعات ايربودز"
+    "سماعات ايربودز",
+    "موبايل مصر",
+    "هاتف ذكي",
+    "iPhone مصر",
+    "Samsung مصر",
   ],
   authors: [{ name: "Dubai Store Egypt" }],
+  creator: "Dubai Store Egypt",
+  publisher: "Dubai Store Egypt",
+  robots: { index: true, follow: true },
   openGraph: {
-    title: "Dubai Store – متجر دبي ستور | موبايلات وإكسسوارات أصلية",
+    title: "دبي ستور | موبايلات وإكسسوارات أصلية في مصر",
     description: "اختار موبايلك من أحدث الموديلات وشوف الإكسسوارات والعروض اللي تناسبك.",
     type: "website",
     locale: "ar_EG",
+    siteName: "دبي ستور",
+    images: [{ url: "/logo.jpg", width: 512, height: 512, alt: "دبي ستور" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "دبي ستور | موبايلات أصلية في مصر",
+    description: "أحدث موبايلات آيفون وسامسونج وإكسسوارات أصلية بأفضل الأسعار.",
+    images: ["/logo.jpg"],
+  },
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/logo.jpg",
+    apple: "/logo.jpg",
   },
 };
 

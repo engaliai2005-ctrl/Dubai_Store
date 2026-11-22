@@ -61,3 +61,85 @@ body {
   border-color: #00C2CB;
   box-shadow: 0 10px 30px -10px rgba(0, 194, 203, 0.15);
 }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SKELETON LOADER ANIMATION
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
+  border-radius: 0.75rem;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SCROLLBAR HIDE UTILITY
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SAFE AREA INSETS (iPhone notch)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   FOCUS VISIBLE (accessibility)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+*:focus-visible {
+  outline: 2px solid #00C2CB;
+  outline-offset: 2px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BUTTON TAP FEEDBACK (mobile)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+button, a {
+  -webkit-tap-highlight-color: rgba(0, 194, 203, 0.15);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SMOOTH PAGE TRANSITIONS
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.35s ease-out forwards;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RTL-SAFE OVERRIDES
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+[dir="ltr"] input, [dir="ltr"] textarea, .dir-ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SELECTION COLOR
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+::selection {
+  background-color: #00C2CB;
+  color: #0F172A;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PRINT STYLES — hide UI chrome
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media print {
+  nav, header, footer, .floating-whatsapp { display: none !important; }
+  body { background: white; color: black; }
+}

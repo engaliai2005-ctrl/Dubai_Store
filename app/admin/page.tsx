@@ -49,6 +49,7 @@ export default function AdminPage() {
     isAdminLoggedIn,
     adminLogin,
     adminLogout,
+    adminGetLockoutInfo,
     addProduct,
     updateProduct,
     deleteProduct,
@@ -94,7 +95,8 @@ export default function AdminPage() {
     e.preventDefault();
     const success = adminLogin(passwordInput);
     if (!success) {
-      setLoginError("كلمة المرور غير صحيحة. كلمة المرور الافتراضية: dubai2026");
+      setLoginError("كلمة المرور غير صحيحة. تأكد من كلمة المرور الصحيحة.");
+      setPasswordInput("");
     } else {
       setLoginError("");
       setPasswordInput("");

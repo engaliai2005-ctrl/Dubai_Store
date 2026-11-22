@@ -81,6 +81,7 @@ import { ProductDetailsModal } from "../components/product/ProductDetailsModal";
 import { useDubaiStore } from "../lib/store";
 import { CategoryId, Product } from "../lib/types";
 import { DUBAI_STORE_PHONE_DISPLAY, getGeneralWhatsAppUrl } from "../lib/whatsapp";
+import { SafeWrapper } from "../components/ui/ErrorBoundary";
 
 export default function HomePage() {
   const {
@@ -222,7 +223,25 @@ export default function HomePage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between selection:bg-[#00C2CB] selection:text-slate-950 font-sans">
       {/* 3D Cinematic Storefront Entrance */}
       {showEntrance && (
-        <StorefrontEntrance3D onEnter={() => setShowEntrance(false)} />
+        <SafeWrapper
+          name="StorefrontEntrance3D"
+          fallback={
+            <div className="fixed inset-0 z-50 h-[100dvh] bg-slate-950 flex items-center justify-center" dir="rtl">
+              <div className="text-center space-y-4">
+                <p className="text-white font-black text-xl">دبي ستور</p>
+                <p className="text-slate-300 text-sm">موبايلات وإكسسوارات أصلية</p>
+                <button
+                  onClick={() => setShowEntrance(false)}
+                  className="px-6 py-3 rounded-xl bg-[#00C2CB] text-white font-black text-sm hover:bg-[#0891B2] transition-colors"
+                >
+                  دخول المتجر
+                </button>
+              </div>
+            </div>
+          }
+        >
+          <StorefrontEntrance3D onEnter={() => setShowEntrance(false)} />
+        </SafeWrapper>
       )}
 
       {/* 1. Header & Navigation */}

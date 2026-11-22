@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://engaliai2005-ctrl.github.io/Dubai_Store/sitemap.xml
