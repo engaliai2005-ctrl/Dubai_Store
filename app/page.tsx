@@ -74,6 +74,7 @@ import { WishlistDrawer } from "../components/catalog/WishlistDrawer";
 import { CartDrawer } from "../components/cart/CartDrawer";
 import { CategoryGrid } from "../components/home/CategoryGrid";
 import { Hero } from "../components/home/Hero";
+import { PromoBanner } from "../components/home/PromoBanner";
 import { FloatingWhatsApp } from "../components/layout/FloatingWhatsApp";
 import { Footer } from "../components/layout/Footer";
 import { Navbar } from "../components/layout/Navbar";
@@ -273,6 +274,14 @@ export default function HomePage() {
           onExploreClick={handleScrollToCatalog}
           onOpenAIFinder={() => setIsAIFinderOpen(true)}
           onReopenEntrance={() => setShowEntrance(true)}
+        />
+
+        {/* 2.5 Promotional Flagship Banner */}
+        <PromoBanner
+          onSelectCategory={(catId) => {
+            setSelectedCategory(catId);
+            handleScrollToCatalog();
+          }}
         />
 
         {/* 3. Shopping Categories Grid */}
